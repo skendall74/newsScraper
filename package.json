@@ -1,0 +1,31 @@
+{
+  "name": "newsscraper",
+  "version": "1.0.0",
+  "description": "News Scraper Yahoo",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skendall74/newsScraper.git"
+  },
+  "keywords": [
+    "News",
+    "Yahoo"
+  ],
+  "author": "Shannon Kendall",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/skendall74/newsScraper/issues"
+  },
+  "homepage": "https://github.com/skendall74/newsScraper#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "cheerio": "^1.0.0-rc.2",
+    "express": "^4.16.4",
+    "express-handlebars": "^3.0.2",
+    "mongoose": "^5.4.20"
+  }
+}
