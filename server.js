@@ -1,9 +1,8 @@
 var express = require("express");
 var logger = require("morgan");
 var mongoose = require("mongoose");
+var hbs = require('express-handlebars');
 
-var path = require('path');
-var exphbs = require('express-handlebars');
 // Our scraping tools
 // Axios is a promised-based http library, similar to jQuery's Ajax method
 // It works on the client and on the server
@@ -12,57 +11,48 @@ var cheerio = require("cheerio");
 
 // Require all models
 var db = require("./models");
-
+//Port
 var PORT = 3000;
 
 // Initialize Express
 var app = express();
-
-
-// Set up handlebars view engine
-app.engine('handlebars', exphbs({ defaultLayout: 'home' }));
-app.set('view engine', 'handlebars');
-app.set('views', path.join(__dirname, "views/"));
-
-// Configure middleware
-
 // Use morgan logger for logging requests
 app.use(logger("dev"));
 // Parse request body as JSON
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.engine("handlebars", hbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
 // Make public a static folder
 app.use(express.static("public"));
 
-// Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/mongoHeadlines", { useNewUrlParser: true });
-
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+mongoose.connect(MONGODB_URI,{ useNewUrlParser: true });
 
-mongoose.connect(MONGODB_URI);
+//Routes
 
-// Routes
+app.get('/', function (req, res) {
+    res.render('main');
+});
 
 // A GET route for scraping the echoJS website
 app.get("/scrape", function (req, res) {
     // First, we grab the body of the html with axios
-    axios.get("http://www.echojs.com/").then(function (response) {
+    axios.get("https://www.yahoo.com/news/").then(function (response) {
         // Then, we load that into cheerio and save it to $ for a shorthand selector
         var $ = cheerio.load(response.data);
 
-        // Now, we grab every h2 within an article tag, and do the following:
-        $("article h2").each(function (i, element) {
+        // Now, we grab every h3 within an article tag, and do the following:
+        $("div h3").each(function (i, element) {
             // Save an empty result object
             var result = {};
 
             // Add the text and href of every link, and save them as properties of the result object
-            result.title = $(this)
-                .children("a")
-                .text();
-            result.link = $(this)
-                .children("a")
-                .attr("href");
+            result.link = $(this).find("a").attr("href");
+            result.title = $(this).find("a").find("b").text();
+            result.author = $(this).find("a").find(".author").text();
+            result.date = $(this).find("a").find(".date").text();
 
             // Create a new Article using the `result` object built from scraping
             db.Article.create(result)
@@ -77,7 +67,7 @@ app.get("/scrape", function (req, res) {
         });
 
         // Send a message to the client
-        res.send("Scrape Complete");
+        res.redirect("/");
     });
 });
 
@@ -131,7 +121,27 @@ app.post("/articles/:id", function (req, res) {
         });
 });
 
-// Start the server
+// Route for saving/updating an Comment's associated article
+app.post("/comments/", function (req, res) {
+    // Create a new comment and pass the req.body to the entry
+    console.log("Req Body in Comment Post: " + req.body);
+    db.Comment.create(req.body)
+        .then(function (dbNote) {
+            // If a Note was created successfully, find one Article with an `_id` equal to `req.params.id`. Update the Article to be associated with the new Note
+            // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
+            // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
+            return db.Article.findOneAndUpdate({ _id: req.body.id }, { comment: dbNote._id }, { new: true });
+        })
+        .then(function (dbArticle) {
+            // If we were able to successfully update an Article, send it back to the client
+            res.json(dbArticle);
+        })
+        .catch(function (err) {
+            // If an error occurred, send it to the client
+            res.json(err);
+        });
+});
+
 app.listen(PORT, function () {
     console.log("App running on port " + PORT + "!");
 });
