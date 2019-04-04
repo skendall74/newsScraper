@@ -1,102 +1,34 @@
-<div class="row">
-    <div class="col-12">
-        <div class="jumbotron titleJumbotron">
-            <div class="headerDivJumbotron">
-                <div id="headerJumbotron">Yahoo Scraper</div>
-                <div id="subheaderJumbotron">Yahoo News Edition</div>
+<h2><i>Click story</i></h2>
+<div id="articles"></div>
+
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-        </div>
-    </div>
-</div>
-
-<nav class="navbar navbar-expand" id="navbar">
-
-    <ul class="navbar-nav">
-        <li class="nav-item">
-            <a class="nav-link navLink" href="/">Home</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link navLink" href="/saved">Saved Articles</a>
-        </li>
-    </ul>
-
-    <button type="button" class="btn btn-primary" id="scrapeArticlesButton">Scrape New Articles</button>
-
-</nav>
-
-<div class="articleContainer">
-    <div class="row">
-
-        <div class="col-1">
-        </div>
-
-        <div class="col-10 articleColumn">
-
-            {{#each articles}}
-
-            <div class="card">
-                <div class="card-header">
-                    <a class="headlineLink" href={{link}} target="_blank">{{headline}}</a>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-2">
-                            <img class="articleImage" src={{photo}}>
-                        </div>
-
-                        <div class="col-8">
-                            <p>{{summary}}{{date}}</p>
-                        </div>
-
-                        <div class="col-2 buttonColumn">
-                            <button type="button" class="btn btn-primary saveArticleButton" data-id={{id}}>Save
-                                Article</button>
-                        </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="commentorName" class="col-form-label">Your name:</label>
+                        <input type="text" class="form-control" id="commentorName">
                     </div>
-                </div>
-            </div>
-
-            {{/each}}
-        </div>
-
-        <div class="col-1">
-        </div>
-
-    </div>
-</div>
-
-
-<div class="modal fade" id="scrapeArticlesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title articlesScrapedTitle">Articles Scraped</h5>
-            </div>
-            <div class="modal-body articlesScrapedBody">
-
+                    <div class="form-group">
+                        <label for="comment" class="col-form-label">Comment:</label>
+                        <textarea class="form-control" id="comment"></textarea>
+                    </div>
+                </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="closeScrapeButton"
-                    data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="articleSavedModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title articleSavedTitle">Success!</h5>
-            </div>
-            <div class="modal-body articleSavedBody">
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="closeArticleButton"
-                    data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="submitComment" data-id="5c9d19c4372a772712f5fd21" type="button"
+                    class="btn btn-primary">Submit comment</button>
             </div>
         </div>
     </div>

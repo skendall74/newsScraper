@@ -17,7 +17,7 @@ var ArticleSchema = new Schema({
     required: true
   },
   // `link` is required and of type String
-  text: {
+  author: {
     type: String,
     required: true
   },
@@ -31,7 +31,7 @@ var ArticleSchema = new Schema({
   // This allows us to populate the Article with an associated Comment
   comment: {
     type: Schema.Types.ObjectId,
-    ref: "Comments"
+    ref: "Comment"
   }
 });
 

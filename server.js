@@ -1,39 +1,35 @@
 var express = require("express");
 var logger = require("morgan");
 var mongoose = require("mongoose");
-var hbs = require('express-handlebars');
-
-// Our scraping tools
-// Axios is a promised-based http library, similar to jQuery's Ajax method
-// It works on the client and on the server
 var axios = require("axios");
 var cheerio = require("cheerio");
+var exphbs = require("express-handlebars");
 
 // Require all models
 var db = require("./models");
-//Port
-var PORT = 3000;
 
 // Initialize Express
 var app = express();
 // Use morgan logger for logging requests
 app.use(logger("dev"));
-// Parse request body as JSON
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.engine("handlebars", hbs({ defaultLayout: "main" }));
+
+//Handlebars
+app.engine("handlebars", exphbs({ defaultLayout: "index" }));
 app.set("view engine", "handlebars");
-// Make public a static folder
-app.use(express.static("public"));
+
+//Port
+var PORT = 3000;
 
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 mongoose.connect(MONGODB_URI,{ useNewUrlParser: true });
 
-//Routes
 
+//Routes
 app.get('/', function (req, res) {
-    res.render('main');
+    res.render('index');
 });
 
 // A GET route for scraping the echoJS website
@@ -44,16 +40,24 @@ app.get("/scrape", function (req, res) {
         var $ = cheerio.load(response.data);
 
         // Now, we grab every h3 within an article tag, and do the following:
-        $("div h3").each(function (i, element) {
+        $("article h3").each(function (i, element) {
             // Save an empty result object
             var result = {};
 
             // Add the text and href of every link, and save them as properties of the result object
-            result.link = $(this).find("a").attr("href");
-            result.title = $(this).find("a").find("b").text();
-            result.author = $(this).find("a").find(".author").text();
-            result.date = $(this).find("a").find(".date").text();
-
+            result.title = $(this)
+                .children("a")
+                .text();
+            result.link = $(this)
+                .children("a")
+                .attr("href");
+            result.author = $(this)
+              .children("a")
+              .attr("author");
+            result.date = $(this)
+                .children("a")
+                .attr("date");
+                
             // Create a new Article using the `result` object built from scraping
             db.Article.create(result)
                 .then(function (dbArticle) {
