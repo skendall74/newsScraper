@@ -26,7 +26,6 @@ var PORT = 3000;
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 mongoose.connect(MONGODB_URI,{ useNewUrlParser: true });
 
-
 //Routes
 app.get('/', function (req, res) {
     res.render('index');
@@ -34,42 +33,53 @@ app.get('/', function (req, res) {
 
 // A GET route for scraping the echoJS website
 app.get("/scrape", function (req, res) {
+    // console.log('scrapin...'); 
     // First, we grab the body of the html with axios
     axios.get("https://www.yahoo.com/news/").then(function (response) {
         // Then, we load that into cheerio and save it to $ for a shorthand selector
         var $ = cheerio.load(response.data);
 
+        var result = [];
         // Now, we grab every h3 within an article tag, and do the following:
-        $("article h3").each(function (i, element) {
-            // Save an empty result object
-            var result = {};
-
+        $("h3").each(function (i, element) {
+         
             // Add the text and href of every link, and save them as properties of the result object
-            result.title = $(this)
+            let title = $(element)
                 .children("a")
                 .text();
-            result.link = $(this)
-                .children("a")
-                .attr("href");
-            result.author = $(this)
+            let link = $(element)
               .children("a")
-              .attr("author");
-            result.date = $(this)
-                .children("a")
-                .attr("date");
-                
+              .attr("href");
+            let author = $(element)
+              .children("a")
+              .attr("");
+            let date = $(element)
+              .children("a")
+              .attr("");
+
+            result.push({
+                title: title, 
+                link: link,
+                author: author, 
+                date: date
+            })
+
+
+            // console.log("pushed result", result);
             // Create a new Article using the `result` object built from scraping
+            console.log("hello", result)
+
             db.Article.create(result)
                 .then(function (dbArticle) {
                     // View the added result in the console
-                    console.log(dbArticle);
+                    console.log("dbarticle",dbArticle);
                 })
                 .catch(function (err) {
                     // If an error occurred, log it
-                    console.log(err);
+                    // console.log(err);
                 });
         });
-
+ 
         // Send a message to the client
         res.redirect("/");
     });
@@ -128,7 +138,7 @@ app.post("/articles/:id", function (req, res) {
 // Route for saving/updating an Comment's associated article
 app.post("/comments/", function (req, res) {
     // Create a new comment and pass the req.body to the entry
-    console.log("Req Body in Comment Post: " + req.body);
+    // console.log("Req Body in Comment Post: " + req.body);
     db.Comment.create(req.body)
         .then(function (dbNote) {
             // If a Note was created successfully, find one Article with an `_id` equal to `req.params.id`. Update the Article to be associated with the new Note
