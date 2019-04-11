@@ -2,15 +2,31 @@
 $.getJSON("/articles", function(data) {
   // For each one
   for (var i = 0; i < data.length; i++) {
+    console.log(data[i]._id);
     // Display the apropos information on the page
-    $("#articles").append("<div class='card' data-id='" + data[i]._id + "'><div class='card-body'>" + 
-      "<h5 class='card-title'>" + data[i].title + "</h5><div class='card-text'>" + 
-      "<h6 class='card-subtitle'>" + data[i].author + "</h6>" +
-      "<h6 class='card-subtitle'>" + data[i].date + "</h6>" +
-      "<a href=" + data[i].link + "class='card-link' target='_blank' style='float: right'>Visit Story</a><div class='addNote' data-id='" 
-      + data[i]._id + "' data-toggle='modal' data-target='#exampleModal' data-whatever='" + data[i].title + "' class='addNote'>Add Note</div></div></div>"
+    $("#articles").append(
+      "<div class='card' data-id='" +
+        data[i]._id +
+        "'><div class='card-body'>" +
+        "<h5 class='card-title'>" +
+        data[i].title +
+        "</h5><div class='card-text'>" +
+        "<h6 class='card-subtitle'>" +
+        data[i].author +
+        "</h6>" +
+        "<h6 class='card-subtitle'>" +
+        data[i].date +
+        "</h6>" +
+        "<a href=" +
+        data[i].url +
+        "class='card-link' target='_blank' style='float: right'>Visit Story</a><div class='addNote' data-id='" +
+        data[i]._id +
+        "' data-toggle='modal' data-target='#exampleModal' data-whatever='" +
+        data[i].title +
+        "' class='addNote'>Add Note</div></div></div>"
     );
-  }
+    console.log(data[i]);
+  } 
 });
 
 // Whenever someone clicks a p tag

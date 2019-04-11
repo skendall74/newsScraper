@@ -1,0 +1,15 @@
+h4 a   {
+    color: black;
+}
+
+h4 a:hover   {
+    color: purple;
+}
+
+.addNote    {
+    color: blue;
+}
+
+h6.card-subtitle    {
+    display: none;
+}
