@@ -4,6 +4,7 @@ $.getJSON("/articles", function(data) {
   console.log(data)
   for (var i = 0; i < 100; i++) {
     // Display the apropos information on the page
+    console.log(data[i]._id);
     $("#articles").append(
       "<div class='card' data-id='" +
         data[i]._id +
@@ -25,6 +26,7 @@ $.getJSON("/articles", function(data) {
         data[i].title +
         "' class='addNote'>Add Note</div></div></div>"
     );
+    
   } 
 });
 
@@ -75,7 +77,7 @@ $(document).on("click", "#submitComment", function() {
   // Run a POST request to change the note, using what's entered in the inputs
   $.ajax({
     method: "POST",
-    url: "/articles" + thisId,
+    url: "/articles/" + thisId,
     data: {
         // Value taken from name input
         commentorName: title,
