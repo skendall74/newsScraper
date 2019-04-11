@@ -1,8 +1,8 @@
 // Grab the articles as a json
 $.getJSON("/articles", function(data) {
   // For each one
-  for (var i = 0; i < data.length; i++) {
-    console.log(data[i]._id);
+  console.log(data)
+  for (var i = 0; i < 100; i++) {
     // Display the apropos information on the page
     $("#articles").append(
       "<div class='card' data-id='" +
@@ -17,15 +17,14 @@ $.getJSON("/articles", function(data) {
         "<h6 class='card-subtitle'>" +
         data[i].date +
         "</h6>" +
-        "<a href=" +
-        data[i].url +
-        "class='card-link' target='_blank' style='float: right'>Visit Story</a><div class='addNote' data-id='" +
+        "<a href='https://news.yahoo.com/" +
+        data[i].link +
+        "' class='card-link' target='_blank' style='float: right'>Visit Story</a><div class='addNote' data-id='" +
         data[i]._id +
         "' data-toggle='modal' data-target='#exampleModal' data-whatever='" +
         data[i].title +
         "' class='addNote'>Add Note</div></div></div>"
     );
-    console.log(data[i]);
   } 
 });
 
