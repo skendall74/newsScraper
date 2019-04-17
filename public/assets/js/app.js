@@ -1,10 +1,10 @@
+$.get('/scrape', res => console.log(res))
+
 // Grab the articles as a json
 $.getJSON("/articles", function(data) {
   // For each one
-  console.log(data)
   for (var i = 0; i < 100; i++) {
     // Display the apropos information on the page
-    console.log(data[i]._id);
     $("#articles").append(
       "<div class='card' data-id='" +
         data[i]._id +
@@ -18,7 +18,7 @@ $.getJSON("/articles", function(data) {
         "<h6 class='card-subtitle'>" +
         data[i].date +
         "</h6>" +
-        "<a href='https://news.yahoo.com/" +
+        "<a href='" +
         data[i].link +
         "' class='card-link' target='_blank' style='float: right'>Visit Story</a><div class='addNote' data-id='" +
         data[i]._id +
